@@ -8,12 +8,14 @@
 h1{
 	display: inline-block !important;
 	font-family: Arial !important;
-	font-size: 4em !important;
 	color: white !important;
 	background-color: darkblue;
 	border:solid lightblue 10px;
 	padding: 5px;
 	margin-top: 10px !important;
+	display: flex;   
+    flex-wrap: nowrap;
+    width: 80%;
 }
 
 
@@ -61,16 +63,6 @@ thead{
 }
 
 
-@media (max-width: 600px){
-	#logo{
-		display: none;
-	}
-}
-@media (min-width: 600px max-width: 800px){
-	#logo{
-		display: none;
-	}
-}
 ol{
 	background-color: lightblue;
 }
@@ -78,4 +70,20 @@ ol{
 .list-group{
 	padding: 10px;
 	background-color: blue !important;
+}
+
+
+@media (max-width: 550px){
+	h1{
+		font-size: 1.5em !important;
+	}
+}
+
+#logo{
+	width: 90%;
+}
+@media (min-width: 760px) and (max-width: 991px){
+	#logo{
+		width: 50%;
+	}
 }

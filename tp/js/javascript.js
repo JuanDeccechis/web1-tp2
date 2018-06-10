@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
 		container.innerHTML = "<h1>Loading...</h1>";
-		fetch("http://localhost/proyectos/TP/home.html").then(
+		fetch("home.html").then(
 			function(response){
 		      		response.text().then(t  => 
 					container.innerHTML = t)
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
 		container.innerHTML = "<h1>Loading...</h1>";
-		fetch("http://localhost/proyectos/TP/catedras.html").then(
+		fetch("catedras.html").then(
 			function(response){
 		      		response.text().then(t  => 
 					container.innerHTML = t)
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
 		container.innerHTML = "<h1>Loading...</h1>";
-		fetch("http://localhost/proyectos/TP/calendario.html").then(
+		fetch("calendario.html").then(
 			function(response){
 		      		response.text().then(t  => 
 					container.innerHTML = t)
