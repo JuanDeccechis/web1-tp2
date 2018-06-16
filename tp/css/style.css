@@ -87,3 +87,33 @@ ol{
 		width: 50%;
 	}
 }
+
+
+/** al menos desde aca se modifica bootstrap**/
+.btn-warning{
+	color: white !important;
+}
+button{
+	font-weight: bold !important;
+}
+
+.table thead th{
+	border: 1px solid black !important;	
+}
+.nuevo{
+	border: none !important;
+}
+
+thead{
+	background-color: lightblue;
+}
+.par{
+	background-color: white;
+}
+.impar{
+	background-color: lightgrey;
+}
+
+tr:nth-child(even){
+	background-color: lightgrey;
+}

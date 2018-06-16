@@ -21,10 +21,9 @@ document.addEventListener("DOMContentLoaded", function(){
 			function(response){
 		      		response.text().then(t  => {
 					container.innerHTML = t;
-					container.querySelector("#js-get").addEventListener("click", get);
-					container.querySelector("#js-create").addEventListener("click", create);
-					container.querySelector("#js-delete").addEventListener("click", delet);
-					container.querySelector("#js-update").addEventListener("click", update);
+					container.querySelector("#js-get").addEventListener("click", eventGet);
+					container.querySelector("#js-create").addEventListener("click", eventCreate);
+					get();					
 					})
 				});
 	}
@@ -39,7 +38,12 @@ document.addEventListener("DOMContentLoaded", function(){
 					container.innerHTML = t)
 					});
 	}
+
+
+
 	window.onload = loadHome;
+	
+
 	let jshome = document.querySelectorAll(".js-home");
 	jshome.forEach(e=> e.addEventListener("click", loadHome));
 	let jscatedras = document.querySelectorAll(".js-catedras");
@@ -47,34 +51,68 @@ document.addEventListener("DOMContentLoaded", function(){
 	let jscalendario = document.querySelectorAll(".js-calendario");
 	jscalendario.forEach(e=> e.addEventListener("click", loadCalendario));
 
+	function eventGet(e){
+		e.preventDefault();
+		get();
+	}
+	function eventCreate(e){
+		e.preventDefault();
+		let propiedad = document.querySelector("#js-property").value;
+		let nombre = document.querySelector("#js-name").value;
+		if (propiedad && nombre)
+			create(propiedad, nombre);
+		else
+			console.log("faltan argumentos");
+	}
+	function eventUpdate(e){
+		e.preventDefault();
+		let propiedad = document.querySelector("#js-property").value;
+		let nombre = document.querySelector("#js-name").value;
+		if (propiedad && nombre)
+			update(this, propiedad, nombre);
+		else
+			console.log("faltan argumentos");
+	}
+	function eventDelete(e){
+		e.preventDefault();
+		del(this);
+	}
+
 	/*** HTTP ***/
 
-	function get(e){
-		e.preventDefault();
+	function get(){
 		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/";
-		let container = document.querySelector("#resultado");
+		let container = document.querySelector("tbody");
 		container.innerHTML = "Cargando";
-		fetch(url).then(r => r.json() )
-			.then(json => container.innerHTML = mostrar(container, json))
-			.catch(error => container.innerHTML = "Error")
+		fetch(url).then(function(r){ 
+			console.log("GET status: " + r.status);
+			r.json()
+				.then(function(json){
+					container.innerHTML = mostrar(container, json);
+					let deletes = container.querySelectorAll(".btn-delete");
+					let updates = container.querySelectorAll(".btn-update");
+					for (let i = 0; i < deletes.length; i++) {
+						deletes[i].addEventListener("click", eventDelete);
+						updates[i].addEventListener("click", eventUpdate);
+					}
+				})
+				.catch(error => container.innerHTML = "Error")
+		})
 	}		
 	
 	function mostrar(container, json){
-		let resultado = "<ul>";
+		let resultado = "<tr>";
 		for (let i = 0; i < json.prueba.length; i++) {
-			resultado = resultado + "<li>" + json.prueba[i].thing.nombre + "	-	id: " + json.prueba[i]._id + "</li>"
+			resultado = resultado + "<td>" + json.prueba[i].thing.nombre + "	-	id: " + json.prueba[i]._id + "</td>"
+			resultado = resultado + "<td> 1 </td> <td> </td> <td class='nuevo'><button id='"+json.prueba[i]._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json.prueba[i]._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
 		}
-		resultado = resultado + "</ul>"
 		return resultado;
 	}
 
-	function create(e){
-		e.preventDefault();
+	function create(propiedad, nombre){
 		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/";
-		let valor = 2;
-		let nombre = "pepe";
 		let objeto = { 
-			"propiedad": valor,
+			"propiedad": propiedad,
 			"nombre": nombre
 		}
 		let equipo ={
@@ -90,14 +128,18 @@ document.addEventListener("DOMContentLoaded", function(){
 	        },
 	        "body": JSON.stringify(equipo)
 	    })
-	    .then(r => console.log(r))
+	    .then(function(r){
+	    	console.log("POST status: " + r.status);
+	    	container.innerHTML = "";
+	    	get();
+	    })
 	    .catch(error => console.log(error))
 	}
 
-	function delet(e){
-		e.preventDefault();
-		let id = document.querySelector("#js-id").value;
-		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/" + id;
+
+	function del(btn){
+		console.log(btn);
+		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/" + btn.id;
 		let container = document.querySelector("#resultado");
 		container.innerHTML = "Cargando";
 		fetch(url, {
@@ -106,21 +148,21 @@ document.addEventListener("DOMContentLoaded", function(){
 	            'Content-Type': 'application/json'
 	        },
 	    })
-	    .then(r => console.log(r))
+	    .then(function(r){
+	    	console.log("DELETE status: " + r.status);
+	    	container.innerHTML = "";
+	    	get();
+	    })
 	    .catch(error => console.log(error))
 	}
 
-	function update(e){
-		e.preventDefault();
-		let id = document.querySelector("#js-id").value;
-		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/" + id;
+	function update(btn, propiedad, nombre){
+		let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/" + btn.id;
 		let container = document.querySelector("#resultado");
 		container.innerHTML = "Cargando";
 
-		let valor = 5;
-		let nombre = "cambiado";
 		let objeto = { 
-			"propiedad": valor,
+			"propiedad": propiedad,
 			"nombre": nombre
 		}
 		let equipo ={
@@ -134,7 +176,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	        },
 	        "body": JSON.stringify(equipo)
 	    })
-	    .then(r => console.log(r))
+	    .then(function(r){
+	    	console.log("PUT status: " + r.status);
+	    	container.innerHTML = "";
+	    	get();
+	    })
 	    .catch(error => console.log(error))
 	}
 
