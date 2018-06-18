@@ -47,11 +47,6 @@ th, td, table{
 	border: 1px solid black;
 }
 
-thead{
-	color: blue;
-	background-color: lightgrey;
-}
-
 .pie h4{
 	clear: both;
 	font-family: Arial;
@@ -100,12 +95,11 @@ button{
 .table thead th{
 	border: 1px solid black !important;	
 }
-.nuevo{
-	border: none !important;
-}
 
 thead{
+	color: darkblue;
 	background-color: lightblue;
+	text-align: center;
 }
 .par{
 	background-color: white;
@@ -116,4 +110,17 @@ thead{
 
 tr:nth-child(even){
 	background-color: lightgrey;
+}
+
+tr{
+	text-align: center;
+}
+
+.filaResaltada{
+	font-weight: bold !important;
+	color: red !important;	
+}
+
+form{
+	margin-top: 5px;
 }
