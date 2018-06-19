@@ -1,5 +1,4 @@
-
-.encabezado{
+header{
 	text-align: center;
 }
 h1{
@@ -15,13 +14,12 @@ h1{
     width: 80%;
 }
 
-
 form input{
     margin-bottom: 10px;
 }
 
 .cuerpo{
-	clear: both;
+	/*clear: both;*/
 	font-family: sans-serif;
 }
 
@@ -30,7 +28,7 @@ th, td, table{
 }
 
 footer h4{
-	clear: both;
+	/*clear: both;*/
 	font-family: Arial;
 	text-align: right;
 }
@@ -40,24 +38,23 @@ footer h4{
 	background-color: lightblue !important;
 }
 
-
+/* achica el tamaño de la fuente*/
 @media (max-width: 550px){
 	h1{
 		font-size: 1.5em !important;
 	}
 }
 
-#logo{
+/* achica el ancho del logo*/
+.logo{
 	width: 90%;
 }
 @media (min-width: 760px) and (max-width: 991px){
-	#logo{
+	.logo{
 		width: 50%;
 	}
 }
 
-
-/** al menos desde aca se modifica bootstrap**/
 .btn-warning{
 	color: white !important;
 }
@@ -75,7 +72,8 @@ thead{
 	text-align: center;
 }
 
-tr:nth-child(even){
+/* filas pares fondo gris*/
+tr:nth-child(even){ 
 	background-color: lightgrey;
 }
 
@@ -92,12 +90,15 @@ form{
 	margin-top: 5px;
 }
 
+/* oculta */
 .oculto{
 	display: none;
 }
+
+/* ancho del input de tiempo (porque ocupa 12 columnas)*/
 @media (max-width: 550px){
 	.inputNumber{
-		width: 40% !important;
+		width: 35% !important;
 	}
 }
 @media (min-width: 550px){
@@ -105,6 +106,8 @@ form{
 		width: 10% !important;
 	}
 }
+
+/* ancho de los input de números*/
 .col-md-6 .inputNumber{
 	width: 20% !important;
 }

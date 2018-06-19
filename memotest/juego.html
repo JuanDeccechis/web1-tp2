@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>MemoTest</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <h1>MemoTest</h1>
+    <div id="botonera">
+        <label for="input-tiempo">Tiempo (segundos): </label>
+        <input id="input-tiempo" type="number" min="0" max="10">
+        <label for="input-probabilidad">Probabilidad de marca (%): </label>
+        <input id="input-probabilidad" type="number" min="1" max="100">
+        <input id="btn-comenzar" type="submit" value="Comenzar">
+    </div>
+    <div class="botones-izq">
+        <button id="btn-reset" type="button" class="oculto">Partida Nueva</button>
+
+        <select id="seleccionar" name="Selecionar" class="oculto">
+			<option value="0">Selecionar uno</option>
+			<option value="1">Casillero 1</option>
+			<option value="2">Casillero 2</option>
+			<option value="3">Casillero 3</option>
+			<option value="4">Casillero 4</option>
+			<option value="5">Casillero 5</option>
+			<option value="6">Casillero 6</option>
+			<option value="7">Casillero 7</option>
+			<option value="8">Casillero 8</option>
+		</select>
+
+        <p id="tiempo" class="texto-centrado aumentado"></p>
+    </div>
+    <ol id="tablero" class="tablero oculto">
+        <li> <img id="casillero1" src="images/dada-vuelta.jpg" alt="Casillero 1" class="casillero"> </li>
+        <li> <img id="casillero2" src="images/dada-vuelta.jpg" alt="Casillero 2" class="casillero"> </li>
+        <li> <img id="casillero3" src="images/dada-vuelta.jpg" alt="Casillero 3" class="casillero"> </li>
+        <li> <img id="casillero4" src="images/dada-vuelta.jpg" alt="Casillero 4" class="casillero"> </li>
+        <li> <img id="casillero5" src="images/dada-vuelta.jpg" alt="Casillero 5" class="casillero"> </li>
+        <li> <img id="casillero6" src="images/dada-vuelta.jpg" alt="Casillero 6" class="casillero"> </li>
+        <li> <img id="casillero7" src="images/dada-vuelta.jpg" alt="Casillero 7" class="casillero"> </li>
+        <li> <img id="casillero8" src="images/dada-vuelta.jpg" alt="Casillero 8" class="casillero"> </li>
+    </ol>
+
+    <table id="resultados" class="texto-centrado">
+        <thead>
+            <th>Partidas</th>
+            <th>Aciertos</th>
+            <th>Errores</th>
+        </thead>
+        <tbody id="cuerpo-tabla">
+            <tr>
+                <td>Partida 1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Totales</td>
+                <td id="cant-aciertos-totales">0</td>
+                <td id="cant-errores-totales">0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="limpiar"></div>
+
+    <script type="text/javascript" src="javascript/script.js"></script>
+</body>
+
+</html>

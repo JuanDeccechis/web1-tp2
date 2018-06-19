@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	let seguirActualizando = true;
 	let arregloJsons= [];
 	let tiempoRecarga = 0;
-	let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/";
+	let url = "http://web-unicen.herokuapp.com/api/groups/03DeccechisGuido/catedra/";
 	let contenido = { 
 		"id": "",
 		"nombre": "",
@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	let objeto ={
 		"thing": contenido
 	}
-
-
+	/***			PARTIAL RENDER!!!			***/
+	/*	Esta función realiza el PARTIAL RENDER que carga en la sección "cuerpo" del index, el home de la página.	*/
 	function loadHome(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			.catch(error => console.log("Error en loadHome: "+error))
 	}
 
+	/*	Esta función realiza el PARTIAL RENDER que carga en la sección "cuerpo" del index, el administrador de cátedras
+		(tabla REST) de la página. Agrega los Event Listener de los botones.	*/
 	function loadCatedrasAdmin(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
@@ -52,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		.catch(error => console.log("Error en loadCatedrasAdmin: "+error))
 	}
 
+	/*	Esta función realiza el PARTIAL RENDER que carga en la sección "cuerpo" del index, la tabla de cátedras de la página.	*/
 	function loadCatedras(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
@@ -66,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		.catch(error => console.log("Error en loadCatedras: "+error))
 	}
 
+	/*	Esta función realiza el PARTIAL RENDER que carga en la sección "cuerpo" del index, el calendario de la página.	*/
 	function loadCalendario(event){
 	event.preventDefault();
 	let container = document.querySelector(".cuerpo");
@@ -79,6 +83,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	.catch(error => console.log("Error en loadCalendario: "+error))
 	}
 
+	/***			AUTO ACTUALIZAR!!! (opcional 2)			***/
+	/*	Esta función cada cierto tiempo (ingresado por el usuario), actualiza la tabla REST para dejarla consistente con la base.	*/
 	function comenzarActualizaciones(event){
 		event.preventDefault();
 		document.querySelector("#timer").classList.toggle('oculto');
@@ -86,12 +92,19 @@ document.addEventListener("DOMContentLoaded", function(){
 		seguirActualizando = true;
 		tiempoRecarga = parseInt(document.querySelector("#time-refresh").value)*1000;
 		console.log(tiempoRecarga);
-		setInterval(function() {
+		let timer = setInterval(function() {
 			if (seguirActualizando)
 				get();
-		}, tiempoRecarga);	/*consultar*/
+			else{
+				setTimeout(function() {
+				clearInterval(timer);
+				}, 0);
+			}
+
+		}, tiempoRecarga);
 	}
 
+	/*	Esta función detiene el AUTO-ACTUALIZAR de la tabla.	*/
 	function detenerActualizaciones(event){
 		event.preventDefault();
 		document.querySelector("#timer").classList.toggle('oculto');
@@ -100,10 +113,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 
-
+	/*	Carga inicial del HOME de la página.	*/
 	window.onload = loadHome;
 	
-
+	/*	Event Listeners de la botonera principal.	*/
 	let jshome = document.querySelectorAll(".js-home");
 	jshome.forEach(e=> e.addEventListener("click", loadHome));
 	let jscatedrasAdmin = document.querySelectorAll(".js-catedras-admin");
@@ -118,10 +131,13 @@ document.addEventListener("DOMContentLoaded", function(){
 		e.preventDefault();
 		getOne();
 	}
+
 	function eventGet(e){
 		e.preventDefault();
 		get();
 	}
+
+	/*	Llama a crear fila si todos los campos necesarios tienen datos.	*/
 	function eventCreate(e){
 		e.preventDefault();
 		let id = document.querySelector("#id").value;
@@ -134,6 +150,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		else
 			console.log("faltan argumentos para crear una fila completa");
 	}
+
+	/*	Llama varias veces a crear fila si todos los campos necesarios tienen datos.	*/
 	function eventCreateCount(e){
 		e.preventDefault();
 		let id = document.querySelector("#id").value;
@@ -148,6 +166,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		else
 			console.log("faltan argumentos para crear "+ n + " filas completas");
 	}
+
+	/*	Llama a actualizar fila si todos los campos necesarios tienen datos.	*/
 	function eventUpdate(e){
 		e.preventDefault();
 		let id = document.querySelector("#id").value;
@@ -160,11 +180,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		else
 			console.log("faltan argumentos para actualizar la fila completa");
 	}
+
 	function eventDelete(e){
 		e.preventDefault();
 		del(this);
 		/*get();*/
 	}
+
+	/*	Elimina todas las filas de la tabla.	*/
 	function eventDeleteAll(e){
 		e.preventDefault();
 		let  filas = document.querySelectorAll(".btn-delete");
@@ -174,8 +197,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		/*get();*/
 	}
 
-	/*** HTTP ***/
-
+	/***			HTTP!!!			***/
+	/*	Esta función realiza el GET HTTP de la tabla completa, utilizando la función mostrar.	*/
 	function get(){
 		let container = document.querySelector("tbody");
 		container.innerHTML = "Cargando";
@@ -202,6 +225,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		})
 	}		
 	
+	/*	Esta función realiza el GET HTTP de una fila de la tabla, utilizando la función mostrar.	*/
 	function getOne(){
 		let container = document.querySelector("tbody");
 		let idCatedra = document.querySelector("#id").value;
@@ -238,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
+	/*	Esta función realiza el GET HTTP de las filas de la tabla que cumplen con el FILTRO por nombre, utilizando la función mostrar.	*/
 	function filtrarPorNombre(){
 		let container = document.querySelector("tbody");
 		let nombreCatedra = document.querySelector("#name").value;
@@ -254,21 +279,23 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
+	/*	Esta función incluye el HTML necesario para visualizar de manera correcta las filas a mostrar en cada caso, de la tabla
+	 de la página. Se debe respetar la estructura de JSONs, por eso hay distintas formas.	*/
 	function mostrar(container, json, stringContenedor){
 		let resultado = "";
 		if (stringContenedor === "prueba"){
 
-			for (let i = 0; i < json.prueba.length; i++) {
-				if (json.prueba[i].thing.nombre.includes("web"))
+			for (let i = 0; i < json.catedra.length; i++) {
+				if (json.catedra[i].thing.nombre.includes("web"))
 					//las filas resaltadas son las que incluyen "web"
 					resultado = resultado +"<tr class='filaResaltada'>";
 				else
 					resultado = resultado +"<tr>";
-				arregloJsons[i] = json.prueba[i];
-				resultado = resultado + "<td> " + json.prueba[i].thing.id + " </td>";
-				resultado = resultado + "<td> " + json.prueba[i].thing.nombre + " </td>";
-				resultado = resultado + "<td> " + "<a href='" + json.prueba[i].thing.link + "'><img src='images/icon-link.png' alt='Link'> </a>" + " </td>";
-				resultado = resultado + "<td><button id='"+json.prueba[i]._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json.prueba[i]._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
+				arregloJsons[i] = json.catedra[i];
+				resultado = resultado + "<td> " + json.catedra[i].thing.id + " </td>";
+				resultado = resultado + "<td> " + json.catedra[i].thing.nombre + " </td>";
+				resultado = resultado + "<td> " + "<a href='" + json.catedra[i].thing.link + "'><img src='images/icon-link.png' alt='Link'> </a>" + " </td>";
+				resultado = resultado + "<td><button id='"+json.catedra[i]._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json.catedra[i]._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
 			}
 		}
 		else{
@@ -300,6 +327,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		return resultado;
 	}
 
+	/*	Esta función realiza el POST HTTP con el contenido de los inputs de la página.	*/
 	function create(propiedad, nombre, link){
 		contenido.id = propiedad;
 		contenido.nombre = nombre;
@@ -323,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		})
 	}
 
-
+	/*	Esta función realiza el DELETE HTTP de la fila de la página.	*/
 	function del(btn){
 		console.log(btn);
 		let urlCompleta = url + btn.id;
@@ -345,6 +373,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		})
 	}
 
+	/*	Esta función realiza el UPDATE HTTP de la fila, con el contenido de los inputs de la página.	*/
 	function update(btn, propiedad, nombre, link){
 		let urlCompleta = url + btn.id;
 		let container = document.querySelector("#resultado");

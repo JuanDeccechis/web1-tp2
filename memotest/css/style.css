@@ -1,0 +1,47 @@
+.oculto{
+	visibility: hidden;
+}
+
+input{
+	margin-right: 2%;
+}
+
+.botones-izq{
+    float: left;
+    margin: 2%;
+}
+
+.aumentado{
+	font-size: 5em;
+}
+
+.tablero{
+	float: left;
+	width: 50%;
+}
+
+.tablero li{
+	display:inline-block;
+}
+
+.limpiar{
+	clear:both;
+}
+
+.casillero{
+	height: 150px;
+}
+
+/***	NUEVO	***/
+
+
+h1{
+	color: blue;
+}
+
+table, h1, tfoot{
+	text-align: center;
+}
+tfoot{
+	color: red;
+}
