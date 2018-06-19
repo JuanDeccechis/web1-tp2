@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	"use-strict";
 	let seguirActualizando = true;
 	let arregloJsons= [];
-	let arregloNombres = [];
+	let tiempoRecarga = 0;
 	let url = "http://web-unicen.herokuapp.com/api/groups/deccechis/prueba/";
 	let contenido = { 
 		"id": "",
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	function loadHome(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
-		container.innerHTML = "<h2>Loading...</h2>";
+		container.innerHTML = "<h2>Cargando...</h2>";
 		fetch("home.html").then(
 			function(response){
 		      		response.text().then(t  => 
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	function loadCatedrasAdmin(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
-		container.innerHTML = "<h2>Loading...</h2>";
+		container.innerHTML = "<h2>Cargando...</h2>";
 		fetch("catedrasAdmin.html").then(
 			function(response){
 	      		response.text().then(t  => {
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	function loadCatedras(event){
 		event.preventDefault();
 		let container = document.querySelector(".cuerpo");
-		container.innerHTML = "<h2>Loading...</h2>";
+		container.innerHTML = "<h2>Cargando...</h2>";
 		fetch("catedras.html").then(
 			function(response){
 		      		response.text().then(t  => {
@@ -66,31 +66,37 @@ document.addEventListener("DOMContentLoaded", function(){
 		.catch(error => console.log("Error en loadCatedras: "+error))
 	}
 
-	function comenzarActualizaciones(e){
-		e.preventDefault();
-		let container = document.querySelector(".cuerpo");
-		let tiempoRecarga = parseInt(container.querySelector("#time-refresh").value)*1000;
+	function loadCalendario(event){
+	event.preventDefault();
+	let container = document.querySelector(".cuerpo");
+	container.innerHTML = "<h2>Cargando...</h2>";
+	fetch("calendario.html").then(
+		function(response){
+	      		response.text().then(t  => 
+					container.innerHTML = t)
+				.catch(error => console.log("Error en loadCalendario, text(): "+error))
+				})
+	.catch(error => console.log("Error en loadCalendario: "+error))
+	}
+
+	function comenzarActualizaciones(event){
+		event.preventDefault();
+		document.querySelector("#timer").classList.toggle('oculto');
+		document.querySelector("#stopTimer").classList.toggle('oculto');
+		seguirActualizando = true;
+		tiempoRecarga = parseInt(document.querySelector("#time-refresh").value)*1000;
+		console.log(tiempoRecarga);
 		setInterval(function() {
 			if (seguirActualizando)
 				get();
-		}, tiempoRecarga);
+		}, tiempoRecarga);	/*consultar*/
 	}
 
-	function detenerActualizaciones(e){
-		e.preventDefault();
-		seguirActualizando = false;
-	}
-	function loadCalendario(event){
+	function detenerActualizaciones(event){
 		event.preventDefault();
-		let container = document.querySelector(".cuerpo");
-		container.innerHTML = "<h2>Loading...</h2>";
-		fetch("calendario.html").then(
-			function(response){
-		      		response.text().then(t  => 
-						container.innerHTML = t)
-					.catch(error => console.log("Error en loadCalendario, text(): "+error))
-					})
-		.catch(error => console.log("Error en loadCalendario: "+error))
+		document.querySelector("#timer").classList.toggle('oculto');
+		document.querySelector("#stopTimer").classList.toggle('oculto');
+		seguirActualizando = false;
 	}
 
 
@@ -207,8 +213,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		if(id === "")
 			console.log("Error en GET one, el ID no corresponde con ningún elemento");
 		else{
-		/*let container = document.querySelector("tbody");
-		let id = document.querySelector("#js-id").value; */
 			let urlCompleta = url + id;
 			fetch(urlCompleta).then(function(r){ 
 				console.log("GET status: " + r.status);
@@ -239,14 +243,13 @@ document.addEventListener("DOMContentLoaded", function(){
 		let nombreCatedra = document.querySelector("#name").value;
 		let filtrados = [];
 		let count = 0;
-		for (var i = 0; i < arregloJsons.length; i++) {
+		for (let i = 0; i < arregloJsons.length; i++) {
 			if(arregloJsons[i].thing.nombre.includes(nombreCatedra)){
 				filtrados[count] = arregloJsons[i];
 				count++;
 			}
 		}
 		if(count !== 0){
-			let container = document.querySelector("tbody");
 			container.innerHTML = mostrar(container, filtrados, "filtro")
 		}
 	}
@@ -261,7 +264,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					resultado = resultado +"<tr class='filaResaltada'>";
 				else
 					resultado = resultado +"<tr>";
-				arregloNombres[i] = json.prueba[i].thing.nombre;
 				arregloJsons[i] = json.prueba[i];
 				resultado = resultado + "<td> " + json.prueba[i].thing.id + " </td>";
 				resultado = resultado + "<td> " + json.prueba[i].thing.nombre + " </td>";
