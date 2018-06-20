@@ -201,12 +201,14 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función realiza el GET HTTP de la tabla completa, utilizando la función mostrar.	*/
 	function get(){
 		let container = document.querySelector("tbody");
-		container.innerHTML = "Cargando";
 		fetch(url).then(function(r){ 
 			console.log("GET status: " + r.status);
 			r.json()
 				.then(function(json){
-					container.innerHTML = mostrar(container, json, "prueba");
+					let cantHijos = container.childNodes.length;
+					for (let i = 0; i < cantHijos; i++) 
+						container.removeChild(container.firstChild);
+					mostrar(container, json, "prueba");
 					let deletes = container.querySelectorAll(".btn-delete");
 					let updates = container.querySelectorAll(".btn-update");
 					for (let i = 0; i < deletes.length; i++) {
@@ -231,8 +233,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		let idCatedra = document.querySelector("#id").value;
 		let id = "";
 		for (var i = 0; i < arregloJsons.length; i++) {
-			if(arregloJsons[i].thing.id === idCatedra)
+			if(arregloJsons[i].thing.id === idCatedra){
 				id = arregloJsons[i]._id;
+			}
 		}
 		if(id === "")
 			console.log("Error en GET one, el ID no corresponde con ningún elemento");
@@ -242,7 +245,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				console.log("GET status: " + r.status);
 				r.json()
 					.then(function(json){
-						container.innerHTML = mostrar(container, json, "information");
+						let cantHijos = container.childNodes.length;
+						for (let i = 0; i < cantHijos; i++) 
+							container.removeChild(container.firstChild);
+						mostrar(container, json, "information");
 						let deletes = container.querySelectorAll(".btn-delete");
 						let updates = container.querySelectorAll(".btn-update");
 						for (let i = 0; i < deletes.length; i++) {
@@ -251,12 +257,10 @@ document.addEventListener("DOMContentLoaded", function(){
 						}
 					})
 					.catch(function(error){
-						error => container.innerHTML = "Error";
 						console.log("Error en GET one, json(): " + error);
 					})
 			})
 			.catch(function(error){
-				error => container.innerHTML = "Error";
 				console.log("Error en GET one: " + error);
 			})
 		}
@@ -275,7 +279,10 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		}
 		if(count !== 0){
-			container.innerHTML = mostrar(container, filtrados, "filtro")
+			let cantHijos = container.childNodes.length;
+			for (let i = 0; i < cantHijos; i++) 
+				container.removeChild(container.firstChild);
+			mostrar(container, filtrados, "filtro");
 		}
 	}
 
@@ -283,48 +290,68 @@ document.addEventListener("DOMContentLoaded", function(){
 	 de la página. Se debe respetar la estructura de JSONs, por eso hay distintas formas.	*/
 	function mostrar(container, json, stringContenedor){
 		let resultado = "";
-		if (stringContenedor === "prueba"){
-
+		if (stringContenedor === "prueba")
 			for (let i = 0; i < json.catedra.length; i++) {
-				if (json.catedra[i].thing.nombre.includes("web"))
-					//las filas resaltadas son las que incluyen "web"
-					resultado = resultado +"<tr class='filaResaltada'>";
-				else
-					resultado = resultado +"<tr>";
 				arregloJsons[i] = json.catedra[i];
-				resultado = resultado + "<td> " + json.catedra[i].thing.id + " </td>";
-				resultado = resultado + "<td> " + json.catedra[i].thing.nombre + " </td>";
-				resultado = resultado + "<td> " + "<a href='" + json.catedra[i].thing.link + "'><img src='images/icon-link.png' alt='Link'> </a>" + " </td>";
-				resultado = resultado + "<td><button id='"+json.catedra[i]._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json.catedra[i]._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
+				let colTr = crearFila(json.catedra[i]);
+				container.appendChild(colTr);
 			}
-		}
 		else{
 			if (stringContenedor === "information") {
-				if (json.information.thing.nombre.includes("web"))
-					//las filas resaltadas son las que incluyen "web"
-					resultado = resultado +"<tr class='filaResaltada'>";
-				else
-					resultado = resultado +"<tr>";
-				resultado = resultado + "<td> " + json.information.thing.id + " </td>";
-				resultado = resultado + "<td> " + json.information.thing.nombre + " </td>";
-				resultado = resultado + "<td> " + "<a href='" + json.information.thing.link + "'><img src='images/icon-link.png' alt='Link'> </a>" + " </td>";
-				resultado = resultado + "<td><button id='"+json.information._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json.information._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
+				let colTr = crearFila(json.information);
+				container.appendChild(colTr);
 			}	
-			else{
+			else
 				for (let i = 0; i < json.length; i++) {
-					if (json[i].thing.nombre.includes("web"))
-					//las filas resaltadas son las que incluyen "web"
-						resultado = resultado +"<tr class='filaResaltada'>";
-					else
-						resultado = resultado +"<tr>";
-					resultado = resultado + "<td> " + json[i].thing.id + " </td>";
-					resultado = resultado + "<td> " + json[i].thing.nombre + " </td>";
-					resultado = resultado + "<td> " + "<a href='" + json[i].thing.link + "'><img src='images/icon-link.png' alt='Link'> </a>" + " </td>";
-					resultado = resultado + "<td><button id='"+json[i]._id+"' class='btn btn-warning btn-update'> modificar</button> <button id='"+ json[i]._id +"' class='btn btn-danger btn-delete'> borrar</button> </td>" + "</tr>"
+					let colTr = crearFila(json[i]);
+					container.appendChild(colTr);
 				}
-			}
 		}
 		return resultado;
+	}
+
+	function crearFila(json){
+		let colTr = document.createElement("tr");
+		if (json.thing.nombre.includes("web")){
+			//las filas resaltadas son las que incluyen "web"
+			colTr.classList.add("filaResaltada");
+		}
+		let colId = document.createElement("td");
+		let contenidoId = document.createTextNode(json.thing.id);
+		colId.appendChild(contenidoId);
+
+		let colNombre = document.createElement("td");
+		let contenidoNombre = document.createTextNode(json.thing.nombre);
+		colNombre.appendChild(contenidoNombre);
+
+		let colLink = document.createElement("td");
+		let link = document.createElement("a");
+		let imagen = document.createElement("img");
+		imagen.setAttribute("src","images/icon-link.png");
+		imagen.setAttribute("alt","link");
+		link.setAttribute("href", json.thing.link);
+		link.appendChild(imagen);
+		colLink.appendChild(link);
+
+		let colBotones = document.createElement("td");
+		let botonUpdate = document.createElement("button");
+		botonUpdate.setAttribute("id", json._id);
+		botonUpdate.classList.add("btn", "btn-warning", "btn-update");
+		let contenidoUpdate = document.createTextNode("Modificar");
+		botonUpdate.appendChild(contenidoUpdate);
+		let botonDelete = document.createElement("button");
+		botonDelete.setAttribute("id", json._id);
+		botonDelete.classList.add("btn", "btn-danger", "btn-delete");
+		let contenidoDelete = document.createTextNode("Eliminar");
+		botonDelete.appendChild(contenidoDelete);
+		colBotones.appendChild(botonUpdate);
+		colBotones.appendChild(botonDelete);
+
+		colTr.appendChild(colId);
+		colTr.appendChild(colNombre);
+		colTr.appendChild(colLink);
+		colTr.appendChild(colBotones);
+		return colTr;
 	}
 
 	/*	Esta función realiza el POST HTTP con el contenido de los inputs de la página.	*/
@@ -333,7 +360,16 @@ document.addEventListener("DOMContentLoaded", function(){
 		contenido.nombre = nombre;
 		contenido.link = link;
 		let container = document.querySelector("#resultado");
-		container.innerHTML = "Cargando";
+		let cantHijos = container.childNodes.length;
+		let count = 0;
+		if (!cantHijos){
+			count++;
+			let parrafo = document.createElement("p");
+			let texto = document.createTextNode("Cargando...");
+			parrafo.appendChild(texto);
+			container.appendChild(parrafo);
+		}
+
 		fetch(url, {
 	        "method": 'POST',
 	        "headers": {
@@ -343,7 +379,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	    })
 		    .then(function(r){
 		    	console.log("POST status: " + r.status);
-		    	container.innerHTML = "";
+		    	if (count){
+		    		count--;
+		    		container.removeChild(container.firstChild);
+		    	}
 		    	get();
 		    })
 	    .catch(function(error){
@@ -353,10 +392,18 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	/*	Esta función realiza el DELETE HTTP de la fila de la página.	*/
 	function del(btn){
-		console.log(btn);
 		let urlCompleta = url + btn.id;
 		let container = document.querySelector("#resultado");
-		container.innerHTML = "Cargando";
+		let cantHijos = container.childNodes.length;
+		let count = 0;
+		if (!cantHijos){
+			count++;
+			let parrafo = document.createElement("p");
+			let texto = document.createTextNode("Cargando...");
+			parrafo.appendChild(texto);
+			container.appendChild(parrafo);
+		}
+
 		fetch(urlCompleta, {
 	        "method": 'DELETE',
 	        "headers": {
@@ -365,7 +412,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	    })
 	    .then(function(r){
 	    	console.log("DELETE status: " + r.status);
-	    	container.innerHTML = "";
+	    	if (count){
+	    		count--;
+	    		container.removeChild(container.firstChild);
+	    	}
 	    	get();
 	    })
 	    .catch(function(error){
@@ -377,7 +427,15 @@ document.addEventListener("DOMContentLoaded", function(){
 	function update(btn, propiedad, nombre, link){
 		let urlCompleta = url + btn.id;
 		let container = document.querySelector("#resultado");
-		container.innerHTML = "Cargando";
+		let cantHijos = container.childNodes.length;
+		let count = 0;
+		if (!cantHijos){
+			count++;
+			let parrafo = document.createElement("p");
+			let texto = document.createTextNode("Cargando...");
+			parrafo.appendChild(texto);
+			container.appendChild(parrafo);
+		}
 
 		contenido.id = propiedad;
 		contenido.nombre = nombre;
@@ -391,7 +449,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	    })
 	    .then(function(r){
 	    	console.log("PUT status: " + r.status);
-	    	container.innerHTML = "";
+	    	if (count){
+	    		count--;
+	    		container.removeChild(container.firstChild);
+	    	}
 	    	get();
 	    })
 	    .catch(function(error){
