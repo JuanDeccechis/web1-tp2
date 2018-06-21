@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	let arregloJsons= [];
 	let tiempoRecarga = 0;
 	let url = "http://web-unicen.herokuapp.com/api/groups/03DeccechisGuido/catedra/";
+	let palabraResaltada = "web";
 	let contenido = { 
 		"id": "",
 		"nombre": "",
@@ -34,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		(tabla REST) de la página. Agrega los Event Listener de los botones.	*/
 	function loadCatedrasAdmin(event){
 		event.preventDefault();
+		if (seguirActualizando)
+			seguirActualizando = false;
 		let container = document.querySelector(".cuerpo");
 		container.innerHTML = "<h2>Cargando...</h2>";
 		fetch("catedrasAdmin.html").then(
@@ -165,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		let nombre = document.querySelectorAll(".nuevaFilaNombre")[0].value;
 		let link = document.querySelectorAll(".nuevaFilaLink")[0].value;
 		if (id && nombre && link){
-			create(id, nombre, link);
+			create(id, nombre, link, true);
 		//	get();
 		}
 		else
@@ -175,14 +178,16 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Llama varias veces a crear fila si todos los campos necesarios tienen datos.	*/
 	function eventCreateCount(e){
 		e.preventDefault();
-		let id = document.querySelectorAll(".nuevaFilaId")[0].value;
-		let nombre = document.querySelectorAll(".nuevaFilaNombre")[0].value;
-		let link = document.querySelectorAll(".nuevaFilaLink")[0].value;
+		let id = document.querySelector(".nuevaFilaId").value;
+		let nombre = document.querySelector(".nuevaFilaNombre").value;
+		let link = document.querySelector(".nuevaFilaLink").value;
 		let cantidad = document.querySelector("#count").value;
 		if (id && nombre && link){
-			for (let i = 0; i < cantidad; i++)
-				create(id, nombre, link);
+			for (let i = 0; i < cantidad -1; i++)
+				create(id, nombre, link, false);
+			create(id, nombre, link, true);
 			/*get();*/
+			
 		}
 		else
 			console.log("faltan argumentos para crear "+ cantidad + " filas completas");
@@ -212,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	function eventDelete(e){
 		e.preventDefault();
-		del(this);
+		del(this, true);
 		/*get();*/
 	}
 
@@ -220,9 +225,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	function eventDeleteAll(e){
 		e.preventDefault();
 		let  filas = document.querySelectorAll(".btn-delete");
-		for (let i = 0; i < filas.length; i++) {
-			del(filas[i]);
+		for (let i = 0; i < filas.length-1; i++) {
+			del(filas[i], false);
 		}
+		del(filas[filas.length-1], true);	//suponiendo que los del() no se ejecutan antes por asincronismo
 		/*get();*/
 	}
 
@@ -230,10 +236,14 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función realiza el GET HTTP de la tabla completa, utilizando la función mostrar.	*/
 	function get(){
 		let container = document.querySelector("tbody");
+		let loader = document.querySelector("#resultado");
+		loader.classList.add("loader");
 		fetch(url).then(function(r){ 
 			console.log("GET status: " + r.status);
 			r.json()
 				.then(function(json){
+					/*container.removeChild(container.lastChild);*/
+					loader.classList.remove("loader");
 					let cantHijos = container.childNodes.length;
 					for (let i = 0; i < cantHijos; i++) 
 						container.removeChild(container.firstChild);
@@ -261,7 +271,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		let container = document.querySelector("tbody");
 		let idCatedra = document.querySelector("#id").value;
 		let id = "";
-		for (var i = 0; i < arregloJsons.length; i++) {
+		for (let i = 0; i < arregloJsons.length; i++) {
 			if(arregloJsons[i].thing.id === idCatedra){
 				id = arregloJsons[i]._id;
 			}
@@ -346,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/* Esta función incluye el HTML necesario para la creación de filas de la tabla. */
 	function crearFila(json, numFila){
 		let colTr = document.createElement("tr");
-		if (json.thing.nombre.includes("web")){
+		if (json.thing.nombre.includes(palabraResaltada)){
 			//las filas resaltadas son las que incluyen "web"
 			colTr.classList.add("filaResaltada");
 		}
@@ -439,7 +449,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	/*	Esta función realiza el POST HTTP con el contenido de los inputs de la página.	*/
-	function create(propiedad, nombre, link){
+	function create(propiedad, nombre, link, ultimo){
 		contenido.id = propiedad;
 		contenido.nombre = nombre;
 		contenido.link = link;
@@ -467,7 +477,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		    		count--;
 		    		container.removeChild(container.firstChild);
 		    	}
-		    	get();
+		    	if (ultimo)
+		    		get();
 		    })
 	    .catch(function(error){
 			console.log("Error en CREATE: " + error);
@@ -475,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	/*	Esta función realiza el DELETE HTTP de la fila de la página.	*/
-	function del(btn){
+	function del(btn, ultimo){
 		let urlCompleta = url + btn.getAttribute("data-fila");
 		let container = document.querySelector("#resultado");
 		let cantHijos = container.childNodes.length;
@@ -500,7 +511,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	    		count--;
 	    		container.removeChild(container.firstChild);
 	    	}
-	    	get();
+	    	if (ultimo) 
+	    		get();
 	    })
 	    .catch(function(error){
 			console.log("Error en DELETE: " + error);

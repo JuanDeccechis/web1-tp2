@@ -1,14 +1,9 @@
 <!-- <div> -->
-    <form>
-        <input type="text" id="time-refresh" class="inputNumber" placeholder="Tiempo">
-        <button id="timer" class="btn btn-success"> setear tiempo</button>
-        <button id="stopTimer" class="btn btn-warning oculto"> detener actualizaciones</button>
-    </form>
     <div class="row">
         <form class="col-md-6">
-            <!-- <input type="text" id="js-id" placeholder="Id"> -->
-            <button id="js-get" class="btn btn-primary">cargar todos</button>
-            <button id="js-delete-all" class="btn btn-danger"> borrar todos</button>
+            <input type="text" id="time-refresh" class="inputNumber" placeholder="Tiempo">
+            <button id="timer" class="btn btn-success"> setear tiempo</button>
+            <button id="stopTimer" class="btn btn-warning oculto"> detener actualizaciones</button>
         </form>
         <form class="col-md-6">
             <input type="text" id="id" class="inputNumber" placeholder="Id catedra">
@@ -16,13 +11,23 @@
         </form>
     </div>
     <div class="row">
-        <form class="col-md-6">
-            <input type="text" id="name" placeholder="Filtrar por Nombre">
+        <form class="col-md-4">
+            <!-- <input type="text" id="js-id" placeholder="Id"> -->
+            <button id="js-get" class="btn btn-primary">cargar todos</button>
+            <button id="js-delete-all" class="btn btn-danger"> borrar todos</button>
+        </form>
+        <form class="col-md-2">
+            <button id="js-create" class="btn btn-primary"> crear uno</button>
         </form>
         <form class="col-md-6">
-            <button id="js-create" class="btn btn-primary"> crear uno</button>
             <input type="text" id="count" class="inputNumber" placeholder="Cantidad">
             <button id="js-create-n" class="btn btn-primary"> crear varios</button>
+        </form>
+    </div>
+    <div class="row">
+        <form class="col-md-6">
+            <label for="name">Filtro por nombre: </label>
+            <input type="text" id="name" placeholder="Filtrar por Nombre">
         </form>
     </div>
     <div id="resultado"></div>  <!-- esto se borra, no se usa el id -->
