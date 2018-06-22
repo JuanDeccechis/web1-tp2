@@ -1,36 +1,36 @@
 <!-- <div> -->
     <div class="row">
         <form class="col-md-6">
-            <input type="text" id="time-refresh" class="inputNumber" placeholder="Tiempo">
-            <button id="timer" class="btn btn-success"> setear tiempo</button>
-            <button id="stopTimer" class="btn btn-warning oculto"> detener actualizaciones</button>
+            <input type="text" class="inputNumber time-refresh" placeholder="Tiempo">
+            <button class="btn btn-success timer"> setear tiempo</button>
+            <button class="btn btn-warning oculto stopTimer"> detener actualizaciones</button>
         </form>
         <form class="col-md-6">
-            <input type="text" id="id" class="inputNumber" placeholder="Id catedra">
-            <button id="js-getId" class="btn btn-primary">cargar uno</button>
+            <input type="text" class="inputNumber id" placeholder="Id catedra">
+            <button class="btn btn-primary js-getId">cargar uno</button>
         </form>
     </div>
     <div class="row">
         <form class="col-md-4">
             <!-- <input type="text" id="js-id" placeholder="Id"> -->
-            <button id="js-get" class="btn btn-primary">cargar todos</button>
-            <button id="js-delete-all" class="btn btn-danger"> borrar todos</button>
+            <button class="btn btn-primary js-get">cargar todos</button>
+            <button class="btn btn-danger js-delete-all"> borrar todos</button>
         </form>
         <form class="col-md-2">
-            <button id="js-create" class="btn btn-primary"> crear uno</button>
+            <button class="btn btn-primary js-create"> crear uno</button>
         </form>
         <form class="col-md-6">
-            <input type="text" id="count" class="inputNumber" placeholder="Cantidad">
-            <button id="js-create-n" class="btn btn-primary"> crear varios</button>
+            <input type="text" class="inputNumber count" placeholder="Cantidad">
+            <button class="btn btn-primary js-create-n"> crear varios</button>
         </form>
     </div>
     <div class="row">
         <form class="col-md-6">
             <label for="name">Filtro por nombre: </label>
-            <input type="text" id="name" placeholder="Filtrar por Nombre">
+            <input type="text" id="name" class="name" placeholder="Filtrar por Nombre">
         </form>
     </div>
-    <div id="resultado"></div>  <!-- esto se borra, no se usa el id -->
+    <div class="resultado"></div>  <!-- esto se borra, no se usa el id -->
 
 	<table class="table">
         <thead>

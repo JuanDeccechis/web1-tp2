@@ -43,15 +43,15 @@ document.addEventListener("DOMContentLoaded", function(){
 			function(response){
 	      		response.text().then(t  => {
 				container.innerHTML = t;
-				container.querySelector("#timer").addEventListener("click", comenzarActualizaciones);
-				container.querySelector("#stopTimer").addEventListener("click", detenerActualizaciones);
+				container.querySelector(".timer").addEventListener("click", comenzarActualizaciones);
+				container.querySelector(".stopTimer").addEventListener("click", detenerActualizaciones);
 				
-				container.querySelector("#js-getId").addEventListener("click", eventGetOne);
-				container.querySelector("#js-get").addEventListener("click", eventGet);
-				container.querySelector("#js-delete-all").addEventListener("click", eventDeleteAll);
-				container.querySelector("#name").addEventListener("keyup", filtrarPorNombre);
-				container.querySelector("#js-create").addEventListener("click", eventInsertOne);
-				container.querySelector("#js-create-n").addEventListener("click", eventInsertCount);
+				container.querySelector(".js-getId").addEventListener("click", eventGetOne);
+				container.querySelector(".js-get").addEventListener("click", eventGet);
+				container.querySelector(".js-delete-all").addEventListener("click", eventDeleteAll);
+				container.querySelector(".name").addEventListener("keyup", filtrarPorNombre);
+				container.querySelector(".js-create").addEventListener("click", eventInsertOne);
+				container.querySelector(".js-create-n").addEventListener("click", eventInsertCount);
 
 				get();
 				})
@@ -97,10 +97,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función cada cierto tiempo (ingresado por el usuario), actualiza la tabla REST para dejarla consistente con la base.	*/
 	function comenzarActualizaciones(event){
 		event.preventDefault();
-		document.querySelector("#timer").classList.toggle('oculto');
-		document.querySelector("#stopTimer").classList.toggle('oculto');
+		document.querySelector(".timer").classList.toggle('oculto');
+		document.querySelector(".stopTimer").classList.toggle('oculto');
 		seguirActualizando = true;
-		tiempoRecarga = parseInt(document.querySelector("#time-refresh").value)*1000;
+		tiempoRecarga = parseInt(document.querySelector(".time-refresh").value)*1000;
 		console.log(tiempoRecarga);
 		let timer = setInterval(function() {
 			if (seguirActualizando)
@@ -117,8 +117,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función detiene el AUTO-ACTUALIZAR de la tabla.	*/
 	function detenerActualizaciones(event){
 		event.preventDefault();
-		document.querySelector("#timer").classList.toggle('oculto');
-		document.querySelector("#stopTimer").classList.toggle('oculto');
+		document.querySelector(".timer").classList.toggle('oculto');
+		document.querySelector(".stopTimer").classList.toggle('oculto');
 		seguirActualizando = false;
 	}
 
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		let id = document.querySelector(".nuevaFilaId").value;
 		let nombre = document.querySelector(".nuevaFilaNombre").value;
 		let link = document.querySelector(".nuevaFilaLink").value;
-		let cantidad = document.querySelector("#count").value;
+		let cantidad = document.querySelector(".count").value;
 		if (id && nombre && link){
 			for (let i = 0; i < cantidad -1; i++)
 				create(id, nombre, link, false);
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función realiza el GET HTTP de la tabla completa, utilizando la función mostrar.	*/
 	function get(){
 		let container = document.querySelector("tbody");
-		let loader = document.querySelector("#resultado");
+		let loader = document.querySelector(".resultado");
 		loader.classList.add("loader");
 		fetch(url).then(function(r){ 
 			console.log("GET status: " + r.status);
@@ -248,12 +248,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					for (let i = 0; i < cantHijos; i++) 
 						container.removeChild(container.firstChild);
 					mostrar(container, json, "prueba");
-					let deletes = container.querySelectorAll(".btn-delete");
-					let updates = container.querySelectorAll(".btn-update");
-					for (let i = 0; i < deletes.length; i++) {
-						deletes[i].addEventListener("click", eventDelete);
-						updates[i].addEventListener("click", eventPreUpdate);
-					}
 				})
 				.catch(function(error){
 					error => container.innerHTML = "Error";
@@ -269,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función realiza el GET HTTP de una fila de la tabla, utilizando la función mostrar.	*/
 	function getOne(){
 		let container = document.querySelector("tbody");
-		let idCatedra = document.querySelector("#id").value;
+		let idCatedra = document.querySelector(".id").value;
 		let id = "";
 		for (let i = 0; i < arregloJsons.length; i++) {
 			if(arregloJsons[i].thing.id === idCatedra){
@@ -308,11 +302,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	/*	Esta función realiza el GET HTTP de las filas de la tabla que cumplen con el FILTRO por nombre, utilizando la función mostrar.	*/
 	function filtrarPorNombre(){
 		let container = document.querySelector("tbody");
-		let nombreCatedra = document.querySelector("#name").value;
+		let nombreCatedra = document.querySelector(".name").value;
 		let filtrados = [];
 		let count = 0;
 		for (let i = 0; i < arregloJsons.length; i++) {
-			if(arregloJsons[i].thing.nombre.includes(nombreCatedra)){
+			if(arregloJsons[i].thing.nombre.toLowerCase().includes(nombreCatedra.toLowerCase())){
 				filtrados[count] = arregloJsons[i];
 				count++;
 			}
@@ -330,13 +324,16 @@ document.addEventListener("DOMContentLoaded", function(){
 	function mostrar(container, json, stringContenedor){
 		let resultado = "";
 		let numFila = 0;
-		if (stringContenedor === "prueba")
+
+		if (stringContenedor === "prueba"){
+			arregloJsons = [];
 			for (let i = 0; i < json.catedra.length; i++) {
 				arregloJsons[i] = json.catedra[i];
 				let colTr = crearFila(json.catedra[i], numFila);
 				container.appendChild(colTr);
 				numFila++;
 			}
+		}
 		else{
 			if (stringContenedor === "information") {
 				let colTr = crearFila(json.information, numFila);
@@ -356,7 +353,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/* Esta función incluye el HTML necesario para la creación de filas de la tabla. */
 	function crearFila(json, numFila){
 		let colTr = document.createElement("tr");
-		if (json.thing.nombre.includes(palabraResaltada)){
+		if (json.thing.nombre.toLowerCase().includes(palabraResaltada.toLowerCase())){
 			//las filas resaltadas son las que incluyen "web"
 			colTr.classList.add("filaResaltada");
 		}
@@ -391,6 +388,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		botonDelete.appendChild(contenidoDelete);
 		colBotones.appendChild(botonUpdate);
 		colBotones.appendChild(botonDelete);
+
+		botonDelete.addEventListener("click", eventDelete);
+		botonUpdate.addEventListener("click", eventPreUpdate);
 
 		colTr.appendChild(colId);
 		colTr.appendChild(colNombre);
@@ -453,7 +453,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		contenido.id = propiedad;
 		contenido.nombre = nombre;
 		contenido.link = link;
-		let container = document.querySelector("#resultado");
+		let container = document.querySelector(".resultado");
 		let cantHijos = container.childNodes.length;
 		let count = 0;
 		if (!cantHijos){
@@ -487,42 +487,46 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	/*	Esta función realiza el DELETE HTTP de la fila de la página.	*/
 	function del(btn, ultimo){
-		let urlCompleta = url + btn.getAttribute("data-fila");
-		let container = document.querySelector("#resultado");
-		let cantHijos = container.childNodes.length;
-		let count = 0;
-		if (!cantHijos){
-			count++;
-			let parrafo = document.createElement("p");
-			let texto = document.createTextNode("Cargando...");
-			parrafo.appendChild(texto);
-			container.appendChild(parrafo);
-		}
+		if(btn){
+			let urlCompleta = url + btn.getAttribute("data-fila");
+			let container = document.querySelector(".resultado");
+			let cantHijos = container.childNodes.length;
+			let count = 0;
+			if (!cantHijos){
+				count++;
+				let parrafo = document.createElement("p");
+				let texto = document.createTextNode("Cargando...");
+				parrafo.appendChild(texto);
+				container.appendChild(parrafo);
+			}
 
-		fetch(urlCompleta, {
-	        "method": 'DELETE',
-	        "headers": {
-	            'Content-Type': 'application/json'
-	        },
-	    })
-	    .then(function(r){
-	    	console.log("DELETE status: " + r.status);
-	    	if (count){
-	    		count--;
-	    		container.removeChild(container.firstChild);
-	    	}
-	    	if (ultimo) 
-	    		get();
-	    })
-	    .catch(function(error){
-			console.log("Error en DELETE: " + error);
-		})
+			fetch(urlCompleta, {
+		        "method": 'DELETE',
+		        "headers": {
+		            'Content-Type': 'application/json'
+		        },
+		    })
+		    .then(function(r){
+		    	console.log("DELETE status: " + r.status);
+		    	if (count){
+		    		count--;
+		    		container.removeChild(container.firstChild);
+		    	}
+		    	if (ultimo) 
+		    		get();
+		    })
+		    .catch(function(error){
+				console.log("Error en DELETE: " + error);
+			})
+		}
+		else
+			console.log("No hay datos para borrar.");
 	}
 
 	/*	Esta función realiza el UPDATE HTTP de la fila, con el contenido de los inputs de la página.	*/
 	function update(btn, propiedad, nombre, link){
 		let urlCompleta = url + btn.getAttribute("data-fila");
-		let container = document.querySelector("#resultado");
+		let container = document.querySelector(".resultado");
 		let cantHijos = container.childNodes.length;
 		let count = 0;
 		if (!cantHijos){
