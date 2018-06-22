@@ -311,12 +311,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				count++;
 			}
 		}
-		if(count !== 0){
 			let cantHijos = container.childNodes.length;
 			for (let i = 0; i < cantHijos; i++) 
 				container.removeChild(container.firstChild);
 			mostrar(container, filtrados, "filtro");
-		}
 	}
 
 	/*	Esta función permite visualizar de manera correcta las filas a mostrar en cada caso, de la tabla
